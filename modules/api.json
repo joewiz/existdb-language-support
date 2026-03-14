@@ -1,0 +1,284 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "eXist-db Language Support API",
+        "version": "1.0.0",
+        "description": "LSP-like endpoints wrapping eXist-db lsp:* functions for XQuery development tools"
+    },
+    "servers": [
+        {
+            "url": "/exist/apps/language-support",
+            "description": "Relative to eXist-db"
+        }
+    ],
+    "security": [
+        {
+            "basicAuth": []
+        },
+        {
+            "cookieAuth": []
+        }
+    ],
+    "components": {
+        "securitySchemes": {
+            "basicAuth": {
+                "type": "http",
+                "scheme": "basic"
+            },
+            "cookieAuth": {
+                "type": "apiKey",
+                "name": "org.exist.login",
+                "in": "cookie"
+            }
+        },
+        "schemas": {
+            "QueryRequest": {
+                "type": "object",
+                "required": ["query", "base"],
+                "properties": {
+                    "query": {
+                        "type": "string",
+                        "description": "XQuery source text"
+                    },
+                    "base": {
+                        "type": "string",
+                        "description": "Base collection path for import resolution"
+                    }
+                }
+            },
+            "CompletionRequest": {
+                "type": "object",
+                "required": ["query", "base"],
+                "properties": {
+                    "query": {
+                        "type": "string"
+                    },
+                    "base": {
+                        "type": "string"
+                    },
+                    "prefix": {
+                        "type": "string",
+                        "description": "Optional prefix to filter completions"
+                    }
+                }
+            },
+            "PositionRequest": {
+                "type": "object",
+                "required": ["query", "line", "column", "base"],
+                "properties": {
+                    "query": {
+                        "type": "string"
+                    },
+                    "line": {
+                        "type": "integer",
+                        "description": "0-indexed line number"
+                    },
+                    "column": {
+                        "type": "integer",
+                        "description": "0-indexed column number"
+                    },
+                    "base": {
+                        "type": "string"
+                    }
+                }
+            },
+            "Diagnostic": {
+                "type": "object",
+                "properties": {
+                    "line": { "type": "integer" },
+                    "column": { "type": "integer" },
+                    "severity": { "type": "string" },
+                    "code": { "type": "string" },
+                    "message": { "type": "string" }
+                }
+            },
+            "Symbol": {
+                "type": "object",
+                "properties": {
+                    "name": { "type": "string" },
+                    "kind": { "type": "string" },
+                    "line": { "type": "integer" },
+                    "column": { "type": "integer" },
+                    "detail": { "type": "string" }
+                }
+            },
+            "CompletionItem": {
+                "type": "object",
+                "properties": {
+                    "label": { "type": "string" },
+                    "kind": { "type": "string" },
+                    "detail": { "type": "string" },
+                    "documentation": { "type": "string" },
+                    "insertText": { "type": "string" }
+                }
+            },
+            "HoverResult": {
+                "type": "object",
+                "properties": {
+                    "contents": { "type": "string" },
+                    "kind": { "type": "string" }
+                }
+            },
+            "DefinitionResult": {
+                "type": "object",
+                "properties": {
+                    "line": { "type": "integer" },
+                    "column": { "type": "integer" },
+                    "name": { "type": "string" },
+                    "kind": { "type": "string" }
+                }
+            }
+        }
+    },
+    "paths": {
+        "/api/diagnostics": {
+            "post": {
+                "summary": "Get diagnostics for XQuery source",
+                "operationId": "lsp-api:diagnostics",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/QueryRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Array of diagnostics",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Diagnostic"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/symbols": {
+            "post": {
+                "summary": "Get document symbols for XQuery source",
+                "operationId": "lsp-api:symbols",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/QueryRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Array of symbols",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Symbol"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/completions": {
+            "post": {
+                "summary": "Get completions for XQuery source",
+                "operationId": "lsp-api:completions",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CompletionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Array of completion items",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CompletionItem"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/hover": {
+            "post": {
+                "summary": "Get hover information at a position",
+                "operationId": "lsp-api:hover",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PositionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Hover content or empty object",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HoverResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/definition": {
+            "post": {
+                "summary": "Go to definition at a position",
+                "operationId": "lsp-api:definition",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PositionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Definition location or empty object",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/DefinitionResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

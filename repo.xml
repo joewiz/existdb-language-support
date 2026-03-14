@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<meta xmlns="http://exist-db.org/xquery/repo">
+    <description>Language support services for XQuery development tools</description>
+    <author>Joe Wicentowski</author>
+    <website>https://github.com/joewiz/existdb-language-support</website>
+    <status>stable</status>
+    <license>GPL-3.0-or-later</license>
+    <copyright>true</copyright>
+    <type>library</type>
+    <target>language-support</target>
+    <prepare>false</prepare>
+    <finish>false</finish>
+</meta>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://expath.org/ns/pkg"
+    name="http://exist-db.org/apps/language-support"
+    abbrev="language-support"
+    version="1.0.0"
+    spec="1.0">
+    <title>eXist-db Language Support</title>
+    <dependency package="http://e-editiones.org/roaster"/>
+</package>
