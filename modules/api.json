@@ -125,7 +125,11 @@
                     "line": { "type": "integer" },
                     "column": { "type": "integer" },
                     "name": { "type": "string" },
-                    "kind": { "type": "string" }
+                    "kind": { "type": "string" },
+                    "uri": {
+                        "type": "string",
+                        "description": "Source path of the module containing the definition (present only for cross-module definitions)"
+                    }
                 }
             }
         }
