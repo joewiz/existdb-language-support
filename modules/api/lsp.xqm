@@ -94,3 +94,18 @@ declare function lsp-api:definition($request as map(*)) {
         else
             map {}
 };
+
+(:~
+ : POST /api/references — Find all references to symbol at position.
+ :
+ : @param $request Roaster request map with JSON body {query, line, column, base}
+ : @return array of reference location maps
+ :)
+declare function lsp-api:references($request as map(*)) {
+    let $body := $request?body
+    let $query := $body?query
+    let $line := xs:integer($body?line)
+    let $column := xs:integer($body?column)
+    let $base := $body?base
+    return lsp:references($query, $line, $column, $base)
+};

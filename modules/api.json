@@ -119,6 +119,15 @@
                     "kind": { "type": "string" }
                 }
             },
+            "ReferenceLocation": {
+                "type": "object",
+                "properties": {
+                    "line": { "type": "integer" },
+                    "column": { "type": "integer" },
+                    "name": { "type": "string" },
+                    "kind": { "type": "string" }
+                }
+            },
             "DefinitionResult": {
                 "type": "object",
                 "properties": {
@@ -277,6 +286,37 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/DefinitionResult"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/references": {
+            "post": {
+                "summary": "Find all references to symbol at a position",
+                "operationId": "lsp-api:references",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PositionRequest"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Array of reference locations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ReferenceLocation"
+                                    }
                                 }
                             }
                         }
